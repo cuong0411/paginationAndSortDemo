@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Home page</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+        crossorigin="anonymous">
+</head>
+
+<body>
+<div class="container">
+  <a th:href="@{/}" class="btn btn-success">Home</a>
+  <h1 class="text-center">Actor List</h1>
+  <div class="row">
+    <div class=" col-12 col-md-4">
+
+      <form th:action="@{'/?pageNo='+${pageNo}+'&pageSize='+${pageSize}+'&sortBy='+${sortBy}+'&sortDir='+${sortDir}}">
+        <div class="mb-3">
+          <label for="pageSize" class="form-label">Chose page size:</label>
+          <select id="pageSize" class="form-select" name="pageSize">
+            <option th:each="i : ${pageSizeList}"
+                    th:selected="${pageSize==i}"
+                    th:value="${i}"
+                    th:text="${i}"></option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="sortBy" class="form-label">Chose sort field:</label>
+          <select id="sortBy" name="sortBy" class="form-select">
+            <option th:selected="${sortBy=='id'}" value="id">Id</option>
+            <option th:selected="${sortBy=='firstName'}" value="firstName">First name</option>
+            <option th:selected="${sortBy=='lastName'}" value="lastName">Last name</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="sortDir" class="form-label"> Choose sort direction</label>
+          <select id="sortDir" name="sortDir" class="form-select">
+            <option th:selected="${sortDir=='asc'}" value="asc">Ascending</option>
+            <option th:selected="${sortDir=='desc'}" value="desc">Descending</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <input type="submit" value="Submit" class="btn btn-primary"/>
+        </div>
+      </form>
+
+      <p th:text="'You are at page '+${pageNo}+' of '+${actors.getTotalPages()}" class="text-info"></p>
+
+    </div>
+    <div class="col-12 col-md-8">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>Id</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Last Update</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="a : ${actors}">
+          <td th:text="${a.id}"></td>
+          <td th:text="${a.firstName}"></td>
+          <td th:text="${a.lastName}"></td>
+          <td th:text="${a.lastUpdate}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <nav aria-label="Page navigation example">
+    <ul class="pagination">
+      <li class="page-item">
+        <a class="page-link"
+           th:href="@{'/?pageSize='+${pageSize}
+            +'&pageNo=1'
+            +'&sortBy='+${sortBy}
+            +'&sortDir='+${sortDir}}">
+          First</a>
+      </li>
+      <li class="page-item" th:classappend="${actors.isFirst() ? 'disabled' : ''}">
+        <a class="page-link"
+           th:href="@{'/?pageSize='+${pageSize}
+            +'&pageNo='+${pageNo>1 ? pageNo - 1 : 1}
+            +'&sortBy='+${sortBy}
+            +'&sortDir='+${sortDir}}">
+          Previous</a>
+      </li>
+      <li class="page-item" th:classappend="${actors.isLast() ? 'disabled' : ''}">
+        <a class="page-link"
+           th:href="@{'/?pageSize='+${pageSize}
+            +'&pageNo=' + ${pageNo>=actors.getTotalPages() ? actors.getTotalPages() : pageNo+1}
+            +'&sortBy='+${sortBy}
+            +'&sortDir='+${sortDir}}">
+          Next</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link"
+           th:href="@{'/?pageSize='+${pageSize}
+            +'&pageNo=' + ${actors.getTotalPages()}
+            +'&sortBy='+${sortBy}
+            +'&sortDir='+${sortDir}}">
+          Last</a>
+      </li>
+    </ul>
+  </nav>
+
+</div>
+</body>
+</html>
